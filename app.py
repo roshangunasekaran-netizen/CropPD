@@ -79,18 +79,6 @@ def predict():
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
-    if None in [N, P, K, temperature, humidity, ph, rainfall]:
-        return jsonify({'error': 'Missing one or more required parameters. Ensure N, P, K, temperature, humidity, ph, rainfall are provided.'}), 400
-        
-    try:
-        predicted_crop_name, confidence = predict_crop(N, P, K, temperature, humidity, ph, rainfall)
-        return jsonify({
-            'predicted_crop': predicted_crop_name,
-            'confidence': f"{confidence:.2f}%"
-        })
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     # For local testing, you can use app.run()
