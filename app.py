@@ -58,14 +58,27 @@ def predict_crop(N, P, K, temperature, humidity, ph, rainfall):
 @app.route('/predict', methods=['POST'])
 def predict():
     data = request.get_json(force=True)
-    
-    N = data.get('N')
-    P = data.get('P')
-    K = data.get('K')
+    data = {k.lower(): v for k, v in data.items()}  # normalize incoming keys
+
+    N = data.get('n')
+    P = data.get('p')
+    K = data.get('k')
     temperature = data.get('temperature')
     humidity = data.get('humidity')
     ph = data.get('ph')
     rainfall = data.get('rainfall')
+
+    if None in [N, P, K, temperature, humidity, ph, rainfall]:
+        return jsonify({'error': 'Missing one or more required parameters.'}), 400
+
+    try:
+        predicted_crop_name, confidence = predict_crop(N, P, K, temperature, humidity, ph, rainfall)
+        return jsonify({
+            'Predicted_crop': predicted_crop_name,
+            'Confidence': f"{confidence:.2f}%"
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
     
     if None in [N, P, K, temperature, humidity, ph, rainfall]:
         return jsonify({'error': 'Missing one or more required parameters. Ensure N, P, K, temperature, humidity, ph, rainfall are provided.'}), 400
