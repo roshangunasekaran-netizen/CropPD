@@ -22,6 +22,14 @@ except Exception as e:
 
 app = Flask(__name__)
 
+@app.route('/')
+def home():
+    return jsonify({
+        "message": "Crop Recommendation API is running",
+        "endpoint": "/predict",
+        "method": "POST"
+    })
+
 def predict_crop(N, P, K, temperature, humidity, ph, rainfall):
     # Create a DataFrame from the input
     input_data = pd.DataFrame([{
